@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dao.ActivityDao">
+
+	<select id="selectAllActivity" resultType="pojo.Activity">
+		select * from activity where astatus=1 order by publishTime desc
+	</select>
+	
+	<update id="updateActivity" parameterType="pojo.Activity">
+		update activity set theme=#{theme},object=#{object},service_time=#{service_time},describe=#{describe},
+						end_time=#{end_time},location=#{location},publishTime=#{publishTime}
+		                where id_a=#{id_a}
+	</update>
+	
+	<update id="delActivityById">
+		update activity set astatus=0 where id_a=#{id_a}
+	</update>
+	
+	<select id="selectActivityByTT" resultType="pojo.Activity">
+		select * from activity where astatus=1
+			<if test="theme != null and theme !=''">
+				and theme like concat('%',#{theme},'%')
+			</if>
+			<if test="date != null and date !=''">
+				and publishTime like concat('%',#{date},'%')
+				or service_time like concat('%',#{date},'%')
+				or end_time like concat('%',#{date},'%')
+			</if>
+			order by publishTime desc
+	</select>
+	
+	<insert id="insertActivity" parameterType="pojo.Activity">
+		insert into activity(theme,object,service_time,end_time,location,publishTime,astatus,`describe`)
+			values(#{theme},#{object},#{service_time},#{end_time},#{location},#{publishTime},1,#{describe})
+	</insert>
+	
+	<select id="selectActivity_0" resultType="pojo.Activity">
+			select * from activity where astatus=1 and service_time &gt; (select sysdate())
+	</select>
+	
+	<select id="selectActivity_1" resultType="pojo.Activity">
+			select * from activity where astatus=1 and end_time &lt; (select sysdate())
+	</select>
+	
+	<select id="selectActivity_2" resultType="pojo.Activity">
+			select * from activity where astatus=1 and service_time &lt; (select sysdate()) and end_time &gt; (select sysdate())
+	</select>
+	
+	<select id="selectActivity_main" resultType="pojo.Activity">
+			select * from activity where id_a not in(select id_a from activity where astatus=1 and end_time &lt; (select sysdate()))
+	</select>
+</mapper>

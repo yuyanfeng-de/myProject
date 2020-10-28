@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dao.PurchaseDao">
+
+	<select id="select_1" resultType="pojo.Temp6">
+		select oid,sname,number,unit_of_measurement,bid from commodity c,buy b,vegetables v where v.sid=c.sid and v.vid=b.oid  and b.state=1
+	</select>
+	
+	<select id="select_2" resultType="java.lang.String">
+		select sname from commodity
+	</select>
+	
+	<select id="select_3" resultType="pojo.Temp3">
+		select u.uname,id_v from `user` u,volunteers v where v.id_u = u.uid and id_v not in
+			(select distinct vtid from allbuy where state=1 and vtid is not null  and complete_b !=2)
+			limit 5
+	</select>
+	
+	<select id="selectAllbuy" resultType="pojo.Allbuy">
+		select * from allbuy where state=1 order by complete_b 
+	</select>
+	<insert id="insertDescribe">
+		insert into allbuy(state,`describe`,complete_b)
+			values(1,#{describe},0)
+	</insert>
+	
+	<update id="updateAllbuyById"  parameterType="pojo.Allbuy">
+		update allbuy set vtid=#{vtid},complete_b=1 where id_b=#{id_b}
+	</update>
+	
+	<update id="updateAllbuy_c" parameterType="pojo.Allbuy">
+		update allbuy set complete_b=2,abtime=#{abtime} where id_b=#{id_b}
+	</update>
+	
+	<select id="selectAllbuyById" resultType="pojo.Allbuy">
+		select * from allbuy where state=1 and vtid=#{vtid} and complete_b!=2
+			order by complete_b
+	</select>
+	<select id="selectComplete_0" resultType="pojo.Allbuy">
+		select * from allbuy where state=1 and complete_b=0
+	</select>
+	
+	<select id="selectComplete_3" resultType="java.lang.Integer">
+		select count(*) from allbuy where complete_b=0
+	</select>
+</mapper>

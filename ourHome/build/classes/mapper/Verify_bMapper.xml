@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dao.Verify_bDao">
+
+	<select id="selectInfoById_e" resultType="pojo.Elderly">
+			select * from elderly_verify where id_u=#{uid}
+	</select>
+	
+	<update id="updateVerify_e" parameterType="pojo.Elderly">
+			update elderly_verify set age=#{age},reason=#{reason},examine_e=#{examine_e},estatus=1
+				where id_u=#{id_u}
+	</update>
+	<insert id="insertVerfy_e" parameterType="pojo.Elderly">
+		insert into elderly_verify(id_u,age,reason,examine_e,estatus) 
+						values(#{id_u},#{age},#{reason},#{examine_e},1)
+	</insert>
+	
+	
+	<select id="selectInfoById_v" resultType="pojo.Volunteers">
+			select * from volunteers_varify where id_u=#{uid}
+	</select>
+	
+	<update id="updateVerify_v" parameterType="pojo.Volunteers">
+			update volunteers_varify set occupation=#{occupation},specialty=#{specialty},status=1,
+				intention=#{intention},experience=#{experience},other=#{other},examine_v=#{examine_v}
+		    where id_u=#{id_u}
+	</update>
+	<insert id="insertVerfy_v" parameterType="pojo.Volunteers">
+		insert into volunteers_varify(id_u,occupation,specialty,intention,experience,other,examine_v,`status`) 
+						values(#{id_u},#{occupation},#{specialty},#{intention},#{experience},#{other},#{examine_v},1)
+	</insert>
+	
+</mapper>

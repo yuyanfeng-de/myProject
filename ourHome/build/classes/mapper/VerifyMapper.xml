@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dao.VerifyDao">
+
+	<update id="updateRoot_u" parameterType="pojo.Temp_1">
+			update user set root=#{root} where uid=#{uid}
+	</update>
+
+	<update id="updateVerify_v" parameterType="pojo.Temp_1">
+			update volunteers set occupation=#{occupation},specialty=#{specialty},status=1,
+				intention=#{intention},experience=#{experience},other=#{other},examine_v=#{examine_v}
+		    where id_u=#{uid}
+	</update>
+	
+	<update id="updateVerify_v2" parameterType="pojo.Temp_1">
+			update volunteers_varify set examine_v=#{examine_v} where id_u=#{uid}
+	</update>
+	
+	<select id="selectInfoById_v" resultType="pojo.Volunteers">
+			select * from volunteers where id_u=#{uid}
+	</select>
+	
+	<insert id="insertVerify_v" parameterType="pojo.Temp_1">
+			insert into volunteers(id_u,occupation,specialty,intention,experience,other,examine_v,`status`) 
+						values(#{uid},#{occupation},#{specialty},#{intention},#{experience},#{other},#{examine_v},1)
+	</insert>
+	
+	<update id="delVerify_v">
+		update volunteers_varify set `status`=0 where id_v=#{uid}
+	</update>
+	
+	<resultMap type="pojo.Query_2" id="query_2">
+     		<id property="uid" column="uid"/>
+     		<result property="upassword" column="upassword"/>
+     		<result property="uname" column="uname"/>
+     		<result property="usex" column="usex"/>
+     		<result property="uidcard" column="uidcard"/>
+     		<result property="upolitic" column="upolitic"/>
+     		<result property="ueducation" column="ueducation"/>
+     		<result property="uaddress" column="uaddress"/>
+     		<result property="ustatus" column="ustatus"/>
+     		<result property="root" column="root"/>
+     		<result property="examine" column="examine"/>
+     		<result property="telephone_u" column="telephone_u"/>
+		    <result property="apply_time" column="apply_time"/>
+				<association property="elderly" javaType="pojo.Elderly">
+					<id property="id_e" column="id_e"/>
+	 				<result property="id_u" column="id_u"/>
+					<result property="age" column="age"/>
+					<result property="reason" column="reason"/>
+					<result property="examine_e" column="examine_e"/>
+					<result property="estatus" column="estatus"/>
+				</association>
+	</resultMap>
+	
+	<select id="selectVerify_e" resultMap="query_2">
+		select * from user u,elderly_verify e
+			where u.uid=e.id_u and estatus=1
+			order by examine_e
+	</select>
+	
+	<update id="updateVerify_e2" parameterType="pojo.Temp_2">
+			update elderly_verify set examine_e =#{examine_e} where id_u=#{uid}
+	</update>
+	
+	<update id="updateRoot_u2" parameterType="pojo.Temp_2">
+			update user set root=#{root} where uid=#{uid}
+	</update>
+	
+	<update id="updateVerify_e" parameterType="pojo.Temp_2">
+			update elderly set age=#{age},reason=#{reason},examine_e=#{examine_e},estatus=1
+				where id_u=#{uid}
+	</update>
+	
+	<select id="selectInfoById_e" resultType="pojo.Elderly">
+			select * from elderly where id_u=#{uid}
+	</select>
+
+	<insert id="insertVerify_e" parameterType="pojo.Temp_2">
+			insert into elderly(id_u,age,reason,examine_e,estatus) 
+						values(#{uid},#{age},#{reason},#{examine_e},1)
+	</insert>
+	
+	<update id="delVerify_e">
+		update elderly_verify set estatus=0 where id_v=#{uid}
+	</update>
+	
+	<select id="selectVerifyByName_e" resultMap="query_2">
+		select * from user u, elderly_verify e
+		where u.uid=e.id_u and estatus =1 and uname like concat('%',#{uname},'%')
+		order by examine_e
+	</select>
+	
+	<select id="countExamine_0" resultType="java.lang.Integer">
+		select count(*) from user_varify where  examine=0
+	</select>
+	
+	<select id="countExamine_v0" resultType="java.lang.Integer">
+		select count(*) from volunteers_varify where examine_v=0
+	</select>
+	
+	<select id="countExamine_e0" resultType="java.lang.Integer">
+		select count(*) from elderly_verify where examine_e=0
+	</select>
+
+</mapper>

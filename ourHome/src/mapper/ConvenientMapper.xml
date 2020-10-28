@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dao.ConvenientDao">
+
+	<select id="selectAllConvenient" resultType="pojo.Convenient">
+		select * from convenient where status_i=1
+	</select>
+	<insert id="insertConvenient" parameterType="pojo.Convenient">
+		insert into convenient(organization,telephone,location,status_i,operating)
+			values(#{organization},#{telephone},#{location},1,#{operating})
+	</insert>
+	<update id="delConvenient">
+		update convenient set status_i=0 where id_i=#{id_i}
+	</update>
+	<update id="updateConvenient" parameterType="pojo.Convenient">
+		update convenient set organization=#{organization},telephone=#{telephone},
+			location=#{location},operating=#{operating}
+			where id_i=#{id_i}
+	</update>
+</mapper>

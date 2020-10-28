@@ -1,0 +1,22 @@
+@charset "UTF-8";
+#style1 {
+	width: 140px;
+	margin: 10px;
+	background-color:#f8f8f8;
+}
+#style2{
+	display:inline-block;
+	width:130;
+	height:67px;
+	line-height:60px;
+	text-align:center;
+	border-radius:2px;
+	font-size:40px;
+	background-color:#f8f8f8;
+	color:#333;
+	transition:all .3s;
+	-webkit-transition:all .3s;
+}
+#style3{
+	color:black;
+}

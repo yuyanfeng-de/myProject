@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dao.UserDao">
+
+	<select id="selectAllUser" resultType="pojo.User">
+	    select u.*,r.root_name from user u,role r 
+	    where u.root=r.root_id and u.ustatus=1 and examine=1
+	    order by uid
+	</select>
+	
+	<select id="selectRole" resultType="pojo.User">
+	    select u.*,r.root_name from user u,role r
+	     where u.root=r.root_id and u.ustatus=1 and examine=1 and root=#{condition}
+	   order by uid
+	</select>
+	
+	<update id="delUser" parameterType="int">
+	 update user set ustatus=0 where uid=#{uid}
+	</update>
+	
+<!-- 使用group by 去重 -->
+	<select id="selectUserByInfo" resultType="pojo.User">
+		select u.*,r.root_name from user u,role r 
+	    	where u.root=r.root_id and u.ustatus=1 and examine=1 and uname like concat('%',#{condition},'%') 
+	    		or usex like concat('%',#{condition},'%') or upolitic like concat('%',#{condition},'%')
+	    		or uaddress like concat('%',#{condition},'%') or ueducation like concat('%',#{condition},'%')
+				or telephone_u like concat('%',#{condition},'%')
+			group by uid
+	    	order by uid
+	</select>
+	
+	<insert id="insertUser" parameterType="pojo.User">
+		insert into user(uname,upassword,usex,uidcard,
+						 upolitic,ueducation,uaddress,telephone_u,apply_time,ustatus,root,examine)
+				values (#{uname},#{upassword},#{usex},#{uidcard},#{upolitic},
+						#{ueducation},#{uaddress},#{telephone_u},#{apply_time},1,#{root},1)
+	</insert>
+	
+	<update id="updateUserById" parameterType="pojo.User">
+		update user set uname=#{uname},upassword=#{upassword},usex=#{usex},uidcard=#{uidcard},examine=#{examine}
+					,upolitic=#{upolitic},ueducation=#{ueducation},uaddress=#{uaddress},telephone_u=#{telephone_u}
+			  where uid=#{uid}
+	</update>
+	
+	<select id="selectUserByExamine" resultType="pojo.User">
+		select u.*,r.root_name from user_varify u,role r
+	    where u.root=r.root_id and u.ustatus=1
+	    order by examine
+	</select>
+	
+	<update id="updateUserById2" parameterType="pojo.User">
+		update user_varify set examine=#{examine}
+			  where uid=#{uid}
+	</update>
+	
+	<select id="selectUserByName2" resultType="pojo.User">
+		select u.*,r.root_name from user_varify u,role r 
+	    where u.root=r.root_id and u.ustatus=1 and uname like concat('%',#{uname},'%')
+	    order by examine
+	</select>
+	
+	<update id="delUser2" parameterType="int">
+	 update user_varify set ustatus=0 where uid=#{uid}
+	</update>
+	
+	<resultMap type="pojo.Query_1" id="query_1">
+     		<id property="uid" column="uid"/>
+     		<result property="upassword" column="upassword"/>
+     		<result property="uname" column="uname"/>
+     		<result property="usex" column="usex"/>
+     		<result property="uidcard" column="uidcard"/>
+     		<result property="upolitic" column="upolitic"/>
+     		<result property="ueducation" column="ueducation"/>
+     		<result property="uaddress" column="uaddress"/>
+     		<result property="ustatus" column="ustatus"/>
+     		<result property="root" column="root"/>
+     		<result property="examine" column="examine"/>
+     		<result property="telephone_u" column="telephone_u"/>
+		    <result property="apply_time" column="apply_time"/>
+				<association property="volunteers" javaType="pojo.Volunteers">
+					<id property="id_v" column="id_v"/>
+	 				 <result property="id_u" column="id_u"/>
+					<result property="occupation" column="occupation"/>
+					<result property="specialty" column="specialty"/>
+					<result property="intention" column="intention"/>
+					<result property="experience" column="experience"/>
+					<result property="other" column="other"/>
+					<result property="examine_v" column="examine_v"/>
+				</association>
+	</resultMap>
+	
+	<select id="selectVerify_v" resultMap="query_1">
+		select u.*,v.occupation,v.Specialty,v.intention,v.experience,v.other,v.examine_v from user u, volunteers_varify v
+		where u.uid=v.id_u and v.`status` =1
+		order by examine_v
+	</select>
+	<select id="selectVerifyByName_v" resultMap="query_1">
+		select u.*,v.occupation,v.Specialty,v.intention,v.experience,v.other,v.examine_v from user u, volunteers_varify v
+		where u.uid=v.id_u and v.`status` =1 and uname like concat('%',#{uname},'%')
+		order by examine_v
+	</select>
+	
+	<update id="updateTime">
+		update user set apply_time=#{date} where uid=#{uid}
+	</update>
+	
+	<select id="selectUserByUid" resultType="pojo.User">
+		select u.*,root_name from `user` u,role r where u.root=r.root_id and ustatus=1 and uid=#{uid}
+	</select>
+</mapper>

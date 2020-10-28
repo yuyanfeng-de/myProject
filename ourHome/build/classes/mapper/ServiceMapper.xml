@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dao.ServiceDao">
+
+	<select id="selectAllService" resultType="pojo.Service2">
+		select s.*,u.uname,telephone_u from service s,`user` u where status_s=1 and s.id_u=u.uid 
+			order by complete,appoint_time desc
+	</select>
+	
+<!-- 	查询当前空闲的志愿者 -->
+	<select id="selectVolunteerNames" resultType="pojo.Temp3">
+		select u.uname,id_v from volunteers v,`user` u 
+			where v.id_u = u.uid and id_v not in
+			(select distinct id_v from service where status_s=1 and id_v is not null  and complete !=2)
+			limit 5
+	</select>
+	
+	<select id="selectVolunteerName" resultType="java.lang.String">
+		select u.uname from volunteers v,`user` u
+			where v.id_u = u.uid and id_v=#{id_v}
+	</select>
+	
+	<update id="updateServiceById" parameterType="pojo.Service2">
+		update service set id_v=#{id_v},complete=1 where id_s =#{id_s}
+	</update>
+	
+	<update id="delServiceById">
+		update service set status_s=0 where id_s =#{id_s}
+	</update>
+	
+	<update id="updateService_c">
+		update service set complete=2,complete_time=#{date} where id_s=#{id_s}
+	</update>
+	
+	<update id="updateService_c2" parameterType="pojo.Service2">
+		update service set complete=2,complete_time=#{complete_time} where id_s=#{id_s}
+	</update>
+	
+	<select id="selectServiceByUT" resultType="pojo.Service2">
+		select s.*,u.uname,telephone_u from service s,`user` u where status_s=1 and s.id_u=u.uid
+			<if test="uname != null and uname !=''">
+				and u.uname like concat('%',#{uname},'%')
+			</if>
+			<if test="date != null and date !=''">
+				and appoint_time like concat('%',#{date},'%')
+				or complete_time like concat('%',#{date},'%')
+			</if>
+			group by id_s
+	</select>
+	
+	<insert id="insertService" parameterType="pojo.Service2">
+		insert into service(object,type,location,context,complete,status_s,appoint_time,id_u)
+		values (#{object},#{type},#{location},#{context},0,1,#{appoint_time},#{id_u})
+	</insert>
+	
+	<select id="selectComplete" resultType="pojo.Service2">
+		select s.*,u.uname,telephone_u from service s,`user` u where status_s=1 and s.id_u=u.uid and complete=#{condition}
+			order by complete,appoint_time desc
+	</select>
+	
+	<select id="selectComplete_3" resultType="pojo.Service2">
+		select s.*,u.uname,telephone_u from service s,`user` u where status_s=1 and s.id_u=u.uid and complete=0
+			order by complete,appoint_time desc
+	</select>
+	
+	<select id="countComplete_0" resultType="java.lang.Integer">
+		select count(*) from service where complete=0
+	</select>
+	<select id="selectComplete_2" resultType="pojo.Service2">
+		select s.*,u.uname,telephone_u from service s,`user` u where status_s=1 and s.id_u=u.uid and complete=2
+	</select>
+	
+	<select id="selectServiceById_v" resultType="pojo.Service2">
+		select s.*,u.uname,telephone_u from service s,`user` u where status_s=1 and s.id_u=u.uid and id_v =#{id_v}
+			order by complete,appoint_time desc
+	</select>
+	
+	<select id="selectId_vByUid" resultType="java.lang.Integer">
+		select id_v from `user` u , volunteers v where u.uid = v.id_u and uid=#{uid}
+	</select>
+	
+	<update id="updateCompleteBefore" parameterType="pojo.Service2">
+		update service set complete=2,complete_time=#{complete_time} where id_s=#{id_s}
+	</update>
+	
+</mapper>

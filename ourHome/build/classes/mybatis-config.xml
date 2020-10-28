@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<mappers>
+	<!-- 映射文件的位置 -->
+	<mapper resource="mapper/UserMapper.xml"/>
+	<mapper resource="mapper/AdminInfoMapper.xml"/>
+	<mapper resource="mapper/MobilityMapper.xml"/>
+	<mapper resource="mapper/VerifyMapper.xml"/>
+	<mapper resource="mapper/NoticeMapper.xml"/>
+	<mapper resource="mapper/ActivityMapper.xml"/>
+	<mapper resource="mapper/BeforeMapper.xml"/>
+	<mapper resource="mapper/Verify_bMapper.xml"/>
+	<mapper resource="mapper/ReportMapper.xml"/>
+	<mapper resource="mapper/ServiceMapper.xml"/>
+	<mapper resource="mapper/ConvenientMapper.xml"/>
+	<mapper resource="mapper/PurchaseMapper.xml"/>
+	</mappers>
+</configuration>

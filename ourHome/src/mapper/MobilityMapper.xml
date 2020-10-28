@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dao.MobilityDao">
+	<select id="selectMobility_r" resultType="pojo.Mobility_r">
+	 select * from mobility_r where status=1
+	</select>
+	
+	<select id="selectMobilityByNT_r" resultType="pojo.Mobility_r">
+		select * from mobility_r where status=1
+			<if test="name_r != null and name_r !=''">
+				and name_r like concat('%',#{name_r},'%')
+			</if>
+			<if test="date != null and date !=''">
+				and outtime_r like concat('%',#{date},'%')
+				or returntime_r like concat('%',#{date},'%')
+			</if>
+	</select>
+	
+	<update id="delMobility_rById" parameterType="int">
+		update mobility_r set status=0 where id_r=#{id_r}
+	</update>
+	
+	<update id="updateMobility_rById" parameterType="pojo.Mobility_r">
+		update mobility_r set name_r=#{name_r},telephone_r=#{telephone_r},
+							  reason_r=#{reason_r},outtime_r=#{outtime_r},
+              				  out_temp=#{out_temp},returntime_r=#{returntime_r},
+              				  return_temp=#{return_temp}
+							  where id_r=#{id_r}
+	</update>
+	
+	<insert id="insertMobility_r" parameterType="pojo.Mobility_r">
+		insert into mobility_r(name_r,telephone_r,reason_r,outtime_r,
+								out_temp,returntime_r,return_temp,`status`)
+					values(#{name_r},#{telephone_r},#{reason_r},#{outtime_r},
+								#{out_temp},#{returntime_r},#{return_temp},1)
+	</insert>
+	
+	<select id="selectMobility_v" resultType="pojo.Mobility_v">
+	 	select * from mobility_v where status=1
+	</select>
+	
+	<update id="updateMobility_vById" parameterType="pojo.Mobility_v">
+		update mobility_v set name_v=#{name_v},telephone_v=#{telephone_v},
+							  reason_v=#{reason_v},visit_time=#{visit_time},
+              				  visit_temp=#{visit_temp},departure_time=#{departure_time},
+              				  departure_temp=#{departure_temp}
+							  where id_v=#{id_v}
+	</update>
+	
+	<insert id="insertMobility_v" parameterType="pojo.Mobility_v">
+		insert into mobility_v(name_v,telephone_v,reason_v,visit_time,
+								visit_temp,departure_time,departure_temp,`status`)
+					values(#{name_v},#{telephone_v},#{reason_v},#{visit_time},
+								#{visit_temp},#{departure_time},#{departure_temp},1)
+	</insert>
+	
+	<update id="delMobility_vById" parameterType="int">
+		update mobility_v set status=0 where id_v=#{id_v}
+	</update>
+	
+	<select id="selectMobilityByNT_v" resultType="pojo.Mobility_v">
+		select * from mobility_v where status=1
+			<if test="name_v != null and name_v !=''">
+				and name_v like concat('%',#{name_v},'%')
+			</if>
+			<if test="date != null and date !=''">
+				and visit_time like concat('%',#{date},'%')
+				or departure_time like concat('%',#{date},'%')
+			</if>
+	</select>
+	
+	<select id="selectCount_r" resultType="pojo.Temp5">
+		select cast(outtime_r as date) as time_r,count(*) as count_r from mobility_r where `status`=1 and outtime_r between  current_date()-7 and sysdate()
+ 			GROUP BY cast(outtime_r as date)
+	</select>
+	
+	<select id="selectCount_v" resultType="pojo.Temp5">
+		 select cast(visit_time as date) as time_r,count(*) as count_r from mobility_v where `status`=1 and visit_time between  current_date()-7 and sysdate()
+			 GROUP BY cast(visit_time as date)
+	</select>
+	
+	<select id="selectCount_c" resultType="pojo.Temp5">
+		select cast(in_time as date) as time_r,count(*) as count_r from mobility_c where `status_c`=1 and in_time between  current_date()-7 and sysdate()
+			 GROUP BY cast(in_time as date)
+	</select>
+	
+	<select id="selectAllMobility_c" resultType="pojo.Mobility_c">
+		select * from mobility_c where status_c=1 order by out_time desc
+	</select>
+	<insert id="insertMobility_c" parameterType="pojo.Mobility_c">
+		insert into mobility_c(telephone_c,in_time,reason_c,out_time,status_c)
+			values(#{telephone_c},#{in_time},#{reason_c},#{out_time},1)
+	</insert>
+	<update id="updateMobility_c" parameterType="pojo.Mobility_c">
+		update mobility_c set telephone_c=#{telephone_c},in_time=#{in_time},reason_c=#{reason_c},out_time=#{out_time}
+			where id_c=#{id_c}
+	</update>
+	<update id="delMobility_c">
+		update mobility_c set status_c=0 where id_c=#{id_c}
+	</update>
+	
+	<select id="selectMobilityByT_c" resultType="pojo.Mobility_c">
+		select * from mobility_c where status_c=1
+			<if test="date != null and date !=''">
+				and in_time like concat('%',#{date},'%')
+				or out_time like concat('%',#{date},'%')
+			</if>
+	</select>
+</mapper>

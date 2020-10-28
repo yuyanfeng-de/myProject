@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dao.NoticeDao">
+	
+	<select id="selectAllNotice" resultType="pojo.Notice">
+		select * from notice where nstatus=1 order by publishTime desc
+	</select>
+	
+	<update id="delNoticeById">
+		update notice set nstatus=0 where id_n=#{id_n}
+	</update>
+	
+	<update id="updateNoticeById" parameterType="pojo.Notice">
+		update notice set tittle=#{tittle},context=#{context},publishTime=#{publishTime} 
+		where id_n=#{id_n}
+	</update>
+	
+	<select id="selectNoticeByTT" resultType="pojo.Notice">
+		select * from notice where nstatus=1
+			<if test="tittle != null and tittle !=''">
+				and tittle like concat('%',#{tittle},'%')
+			</if>
+			<if test="date != null and date !=''">
+				and publishTime like concat('%',#{date},'%')
+			</if>
+			order by publishTime desc
+	</select>
+	
+	<insert id="insertNotice" parameterType="pojo.Notice">
+		insert into notice(tittle,context,publishTime,nstatus) 
+					values(#{tittle},#{context},#{publishTime},1)
+	</insert>
+	
+	
+	<select id="selectNotice_main" resultType="pojo.Notice">
+		select * from notice where publishTime between current_date()-7 and sysdate()
+		order by publishTime desc
+		limit 5
+	</select>
+	
+	
+</mapper>

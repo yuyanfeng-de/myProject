@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dao.ReportDao">
+
+	<insert id="insertReport" parameterType="pojo.Report">
+		insert into report(id_u,health,temperature,contact,difficulty,outplan,report_time,status_t)
+		values(#{id_u},#{health},#{temperature},#{contact},#{difficulty},#{outplan},#{report_time},1)
+	</insert>
+	
+	<select id="selectReport" resultType="pojo.Report">
+		select * from report where status_t=1
+	</select>
+	
+	<update id="updateStatus">
+		update report set status_t=0 where id_u=#{id_u}
+	</update>
+	
+	<select id="selectReport2" resultType="pojo.Report">
+		select * from report where id_u=#{id_u}
+	</select>
+	
+	<update id="updateReport" parameterType="pojo.Report">
+		update report set health=#{health},temperature=#{temperature},contact=#{contact},difficulty=#{difficulty},outplan=#{outplan},status_t=1
+		where id_u=#{id_u}
+	</update>
+	
+	<select id="selectAllReport" resultType="pojo.Report2">
+		select r.*,u.uname,u.uaddress,u.telephone_u from report r,`user` u 
+			where r.id_u=u.uid and status_t=1
+	</select>
+	
+	<update id="delReportById">
+			update report set status_t=0 where id_t=#{id_t}
+	</update>
+	
+	<select id="selectReportByUT" resultType="pojo.Report2">
+		select r.*,u.uname,u.uaddress,u.telephone_u from report r,`user` u 
+			where r.id_u=u.uid and status_t=1
+			<if test="uname != null and uname !=''">
+				and u.uname like concat('%',#{uname},'%')
+			</if>
+			<if test="date != null and date !=''">
+				and report_time like concat('%',#{date},'%')
+			</if>
+			group by id_t
+	</select>
+	
+	<select id="selectTemp_h" resultType="pojo.Report2">
+		select r.*,u.uname,u.telephone_u,u.uaddress from report r,`user` u 
+			where r.id_u=u.uid and status_t=1 and temperature not between 36.3 and 37.2
+	</select>
+	
+	<select id="selectCount_T" resultType="pojo.Temp4">
+		select cast(report_time as date) as report_time,count(*) as count, MAX(temperature) as max,min(temperature) as min
+			from report where temperature not between 36.3 and 37.2 and report_time between current_date()-7 and sysdate()
+ 			GROUP BY cast(report_time as date)
+	</select>
+</mapper>
